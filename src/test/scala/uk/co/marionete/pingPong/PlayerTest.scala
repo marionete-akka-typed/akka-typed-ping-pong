@@ -1,23 +1,8 @@
 package uk.co.marionete.pingPong
 
-import org.scalatest.FunSuite
+import akka.actor.typed._
+import akka.actor.typed.scaladsl._
+import akka.testkit.typed.scaladsl.Effects._
 
-class PlayerTest extends FunSuite {
 
-  test("testResting") {
 
-  }
-
-  test("testResting$default$1") {
-
-  }
-
-  test("testPlaying") {
-
-  }
-
-  test("testPlaying$default$1") {
-
-  }
-
-}
