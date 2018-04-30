@@ -1,10 +1,11 @@
-package uk.co.marionete.pingPong
+package uk.co.marionete.ping_pong
 
 import akka.NotUsed
 import akka.actor.typed.scaladsl.Behaviors
 import akka.actor.typed.{ActorRef, Behavior, Terminated}
 
 object Game {
+
   val root: Behavior[NotUsed] =
     Behaviors.setup { ctx =>
       val ping: ActorRef[PCommand] = ctx.spawn(new Player().rest, "Ping")

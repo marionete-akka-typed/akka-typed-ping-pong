@@ -1,4 +1,4 @@
-package uk.co.marionete.pingPong
+package uk.co.marionete.ping_pong
 
 import akka.actor.typed.scaladsl.Behaviors
 import akka.actor.typed.{ActorRef, Behavior}
@@ -9,6 +9,9 @@ case class EndGame(who: ActorRef[EndGame]) extends PCommand
 case class Ping(from: ActorRef[PCommand]) extends PCommand
 
 class Player {
+
+  case class State(moves: Int)
+
   val rest: Behavior[PCommand] = resting()
 
   private def resting(): Behavior[PCommand] =
@@ -18,12 +21,11 @@ class Player {
           println(s"${ctx.self.path.toString} - Starting game")
           playing(move = moves)
         case _ =>
-          Beh
           Behaviors.same
       }
     }
 
-  private def playing(move: Int): Behavior[PCommand] =
+  private[ping_pong] def playing(move: Int): Behavior[PCommand] =
     Behaviors.receive[PCommand] { (ctx, msg) =>
       msg match {
         case Ping(from) =>
@@ -44,5 +46,7 @@ class Player {
       }
     }
 }
+
+
 
 
