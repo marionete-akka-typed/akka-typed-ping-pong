@@ -1,5 +1,6 @@
 package uk.co.marionete.ping_pong
 
+import akka.NotUsed
 import akka.actor.typed.scaladsl.Behaviors.Receive
 import akka.testkit.typed.scaladsl.Effects.Spawned
 import akka.testkit.typed.scaladsl.{ActorTestKit, BehaviorTestKit}
@@ -18,11 +19,11 @@ class GameSpec
         "are two in number" in {
           Given("An empty game")
           When("it is created")
-          val given = BehaviorTestKit(Game.root)
+          val given: BehaviorTestKit[NotUsed] = BehaviorTestKit(Game.root)
 
           Then("two players should exist")
-          val expected = 2
-          val result = given
+          val expected: Int = 2
+          val result: Int = given
             .retrieveAllEffects
             .filter(_.isInstanceOf[Spawned[Receive[Player]]])
             .size
@@ -30,23 +31,24 @@ class GameSpec
           result shouldEqual expected
         }
 
-//        "are named Ping and Pong" in {
-//          Given("An empty game")
-//          When("it is created")
-//          val given = BehaviorTestKit(Game.root)
+        "are named Ping and Pong" in {
+          Given("An empty game")
+          When("it is created")
+          val given: BehaviorTestKit[NotUsed] = BehaviorTestKit(Game.root)
 
-//          Then("two players should exist")
-//          val allPlayers = given
-//            .retrieveAllEffects.map()
+          Then("two players should exist")
+          val expected = Set("Ping", "Pong")
+          val result: Set[String] = given
+            .retrieveAllEffects
+            .filter(_.isInstanceOf[Spawned[Receive[Player]]])
+            .map(_.asInstanceOf[Spawned[Receive[Player]]].childName)
+            .toSet
 
-
-//          assert(false)
-//        }
+          result shouldEqual expected
+        }
       }
     }
-
-
   }
 
-
+  override def afterAll(): Unit = shutdownTestKit()
 }

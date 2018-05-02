@@ -14,7 +14,6 @@ class PlayerSpec
     "be alive" in {
       val testKit: BehaviorTestKit[PCommand] = BehaviorTestKit(new Player().rest)
       testKit.run(StartGame(0))
-      testKit.expectEffect(null)
       assert(testKit.isAlive)
     }
   }

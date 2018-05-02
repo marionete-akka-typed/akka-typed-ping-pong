@@ -9,7 +9,6 @@ case class EndGame(who: ActorRef[EndGame]) extends PCommand
 case class Ping(from: ActorRef[PCommand]) extends PCommand
 
 class Player {
-
   case class State(moves: Int)
 
   val rest: Behavior[PCommand] = resting()
