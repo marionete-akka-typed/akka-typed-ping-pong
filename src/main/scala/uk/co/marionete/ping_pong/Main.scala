@@ -1,4 +1,4 @@
-package uk.co.marionete.pingPong
+package uk.co.marionete.ping_pong
 
 import akka.NotUsed
 import akka.actor.typed.ActorSystem

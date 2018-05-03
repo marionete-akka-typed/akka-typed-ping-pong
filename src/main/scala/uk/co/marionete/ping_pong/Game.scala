@@ -1,12 +1,10 @@
-package uk.co.marionete.pingPong
+package uk.co.marionete.ping_pong
 
 import akka.NotUsed
 import akka.actor.typed.scaladsl.Behaviors
 import akka.actor.typed.{ActorRef, Behavior, Terminated}
 
 object Game {
-  //  sealed trait Command
-  //  case class Start() extends Command
 
   val root: Behavior[NotUsed] =
     Behaviors.setup { ctx =>
@@ -15,8 +13,9 @@ object Game {
       ctx.watch(ping)
       ctx.watch(pong)
 
-      ping ! StartGame
-      pong ! StartGame
+      import scala.util.Random
+      ping ! StartGame(Random.nextInt(30) + 10)
+      pong ! StartGame(Random.nextInt(30) + 10)
 
       ping ! Ping(pong)
 
