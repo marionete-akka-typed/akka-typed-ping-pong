@@ -8,8 +8,8 @@ import org.scalatest.{BeforeAndAfterAll, GivenWhenThen, Matchers, WordSpec}
 
 class GameSpec
   extends WordSpec
-    with ActorTestKit
     with Matchers
+    with ActorTestKit
     with BeforeAndAfterAll
     with GivenWhenThen {
 
