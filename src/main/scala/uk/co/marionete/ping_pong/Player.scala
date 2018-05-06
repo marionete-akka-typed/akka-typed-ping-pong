@@ -9,7 +9,7 @@ case class EndGame(who: ActorRef[EndGame]) extends PCommand
 case class Ping(from: ActorRef[PCommand]) extends PCommand
 
 class Player {
-  case class State(moves: Int)
+  case class State_(move: Int)
 
   val rest: Behavior[PCommand] = resting()
 
@@ -18,24 +18,24 @@ class Player {
       msg match {
         case StartGame(moves) =>
           println(s"${ctx.self.path.toString} - Starting game")
-          playing(move = moves)
+          playing(state = State_(moves))
         case _ =>
           Behaviors.same
       }
     }
 
-  private[ping_pong] def playing(move: Int): Behavior[PCommand] =
+  private[ping_pong] def playing(state: State_): Behavior[PCommand] =
     Behaviors.receive[PCommand] { (ctx, msg) =>
       msg match {
         case Ping(from) =>
-          if (move <= 0) {
+          if (state.move <= 0) {
             println(s"${ctx.self.path.toString} - I am the champion")
             from ! EndGame(ctx.self)
             resting()
           } else {
-            println(s"${ctx.self.path.toString} - move = ${move}")
+            println(s"${ctx.self.path.toString} - move = ${state.move}")
             from ! Ping(ctx.self)
-            playing(move - 1)
+            playing(state.copy(move = state.move - 1))
           }
         case EndGame(from) =>
           println(s"${ctx.self.path.toString} - I lost")

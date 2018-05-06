@@ -21,9 +21,9 @@ class PlayerSpec
   "A player" must {
     "send message" in {
       val probe: TestProbe[PCommand] = TestProbe[PCommand]()
-      val play: Behavior[PCommand] = new Player().playing(10)
-      val pinger: ActorRef[PCommand] = spawn(play)
+      val pinger: ActorRef[PCommand] = spawn(new Player().rest)
 
+      pinger ! StartGame(10)
       pinger ! Ping(probe.ref)
 
       probe.expectMessage(Ping(pinger))
@@ -33,9 +33,9 @@ class PlayerSpec
   "A player" must {
     "send a end game message" in {
       val probe: TestProbe[PCommand] = TestProbe[PCommand]()
-      val play: Behavior[PCommand] = new Player().playing(0)
-      val pinger: ActorRef[PCommand] = spawn(play)
+      val pinger: ActorRef[PCommand] = spawn(new Player().rest)
 
+      pinger ! StartGame(0)
       pinger ! Ping(probe.ref)
 
       probe.expectMessage(EndGame(pinger))
