@@ -1,5 +1,8 @@
 # akka_typed_ping_pong
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Build Status](https://travis-ci.com/ricardomiranda/akka_typed_ping_pong.svg?branch=master)](https://travis-ci.com/ricardomiranda/akka_typed_ping_pong)
+
 PingPong is a simple program, written for illustrative purposes, where 2 players (actors) send messages back and forth between them. Constraints are:
 * use typed actors;
 * run in a single machine (distributed system is a future exercise);
