@@ -2,6 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Build Status](https://travis-ci.com/ricardomiranda/akka_typed_ping_pong.svg?branch=master)](https://travis-ci.com/ricardomiranda/akka_typed_ping_pong)
+[![Codacy Badge](https://api.codacy.com/project/badge/Coverage/9332e76fb5de49dc84a18278ef920a33)](https://www.codacy.com/app/mail_62/akka_typed_ping_pong?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ricardomiranda/akka_typed_ping_pong&amp;utm_campaign=Badge_Coverage)
 
 PingPong is a simple program, written for illustrative purposes, where 2 players (actors) send messages back and forth between them. Constraints are:
 * use typed actors;
