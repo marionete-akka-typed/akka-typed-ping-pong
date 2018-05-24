@@ -13,9 +13,11 @@ env:
   - secure: J8TGt4E80oU4UvxqpF5J6vBTmvEyrx47ABXHdDgdWss0ky9arV/y157Rar8icV8pbCSamgpZpVaP3VN1A6t0F04qU1Vq7tBxgtc5kKgM2fkzuZKEPHSw0IPFtekH69GILg1+DeUteczKm7rQNcXGYgWhsVlhN2m94UbfX2X06JkvAFZ9115Xn96mTFXDsR5ZJSsvRB+o1YI5h3a/gm2fZ3S/bh8DXupgJLzfRgZt3yim6I+SPSd4V8yL8mmR7oOyxG9TI3OnrDImDhq4bQhfyWOCHPWg+UnwcfUoBwefmp+3fsKuacd+eFy6dqzLhwc/+8vpycON7+TmtflNolhmyGQobrVX6SSZuvcbHZiynfBfWtf8JPUsGIhhANwKcGJoMpJ8jXZU1RhXxpBWVgNLnnXzbBhv1heaNSAtN2ypRZ2rjUXXtlndZhPLCm3QxL4pyeMXCSlNQC/PbA1A96xtkwkh5mZZxVNiClTHrPCQbdhi58vDBk9NriwpdBjXlyHhzsCRmwjMwciU3BWVqj1HyEChVaM/ZIbyxdaCbsTKZMeQKTHE0qXdw7RUULJlFTu9vG7ZMZ3Hf8ouWBLUwpt+tXb1dR1DvbPanHPAg3g/N4+c6WSEEgAkc5rBdPhnp3XMBK7ddq97o8Reuc9RQIOQkRJgB2FZVkXGznqxenZJ5bQ=
 after_success:
   - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
-  - export REPO=repo_name/project_name
-  - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH ; fi`
-  - docker build -f Dockerfile -t $REPO:$COMMIT .
-  - docker tag $REPO:$COMMIT $REPO:$TAG
-  - docker tag $REPO:$COMMIT $REPO:travis-$TRAVIS_BUILD_NUMBER
-  - docker push $REPO
+  - if [[ $TRAVIS_BRANCH == "master" ]]; then
+    export REPO=ricardomiranda/akka_typed_ping_pong
+    export TAG=latest
+    docker build -f Dockerfile -t $REPO:$COMMIT .
+    docker tag $REPO:$COMMIT $REPO:$TAG
+    docker tag $REPO:$COMMIT $REPO:travis-$TRAVIS_BUILD_NUMBER
+    docker push $REPO
+    fi
