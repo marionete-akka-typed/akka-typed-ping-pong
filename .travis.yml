@@ -2,9 +2,9 @@ language: scala
 scala:
 - 2.12.6
 script:
-- sbt compile coverage test coverageReport codacyCoverage assembly
+  - sbt compile coverage test coverageReport codacyCoverage assembly
 services:
-- docker
+  - docker
 env:
   global:
   - secure: BIXurpR+KTooYWs8Nkc90r5LIlhYnv3D0qIXItkB60DfYi+GavOdsAfywUIMh+hDAzTZCDahqlZCDPxPThY7Fvlgflf47jKUr6sC4fBMmvDdQVNLj+rzMjoPrSlDwaXipwAiK8sk4yyMmIVQlXn4gF7VoengjPP7Z9jRiQ87mH9Nwbnb/mXi7Ccn37AuNUu9phRJ29+RduC+ScXNt/bV2jZD13dRIEXs5RCK0JUmE/+nrV0tZ+RI7SUL3tD1jORKxkm49u+1FzD0pFyjMEAo5zAYynyLdGxt50nTDw2UYWSVCyDJ5bVXOe9yYk9Ub8+M3FEwYxJOhbjkhVLZ6mwzOdilZeGrA6OWQGGZ3qRScD/kNr53OIb4NlE26kEGOV0eWTLukmNWtKfCVrpd5xdFawZ3LrRkP5chMVUXX+RpaRB6n1A98u6I62HJGrBqDsSk0PkBSQW4tdaqU9UTOicaMpum2Y++pzfk/eaW4MORdhovSTYtMfkRZ8laL6HylfzP+3/HVJqAYrMxggkLmgC1Xha1JBXkGVmHBFtyKR2Szwx5PJ6g76osqQc4gwoIB5fJ39bILrNIx8gWTp/Of+sRYzb1zpGRDeMiZTnYPUQie4J/y8pcCvK8+rB85oHixjLDXxxScoWLWnEpXQCwxMeO29h4da0GKfciJAvbxKbrhGY=
@@ -17,3 +17,12 @@ after_success:
   export TAG=latest docker build -f Dockerfile -t $REPO:$COMMIT . docker tag $REPO:$COMMIT
   $REPO:$TAG docker tag $REPO:$COMMIT $REPO:travis-$TRAVIS_BUILD_NUMBER docker push
   $REPO fi
+
+after_success:
+  - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+  - export REPO=repo_name/project_name
+  - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH ; fi`
+  - docker build -f Dockerfile -t $REPO:$COMMIT .
+  - docker tag $REPO:$COMMIT $REPO:$TAG
+  - docker tag $REPO:$COMMIT $REPO:travis-$TRAVIS_BUILD_NUMBER
+  - docker push $REPO
