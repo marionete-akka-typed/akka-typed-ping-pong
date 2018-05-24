@@ -1,8 +1,34 @@
 language: scala
 scala:
-- 2.12.6
+  - 2.12.6
 script:
-  - sbt compile coverage test coverageReport codacyCoverage
+  - sbt compile coverage test coverageReport codacyCoverage assembly
+services:
+  - docker
+after_success:
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  - if [[ $TRAVIS_BRANCH == "master" ]]; then 
+    export REPO=ricardomiranda/akka_typed_ping_pong;
+    export TAG=latest; 
+    docker build -f Dockerfile -t $REPO:$COMMIT .; 
+    docker tag $REPO:$COMMIT $REPO:$TAG; 
+    docker tag $REPO:$COMMIT $REPO:travis-$TRAVIS_BUILD_NUMBER; 
+    docker push $REPO; 
+    fi
+# Use container-based infrastructure
+sudo: false
+# These directories are cached to S3 at the end of the build
+cache:
+  directories:
+    - $HOME/.ivy2/cache
+    - $HOME/.sbt
+before_cache:
+  # Cleanup the cached directories to avoid unnecessary cache updates
+  - find $HOME/.ivy2/cache -name "ivydata-*.properties" -print -delete
+  - find $HOME/.sbt        -name "*.lock"               -print -delete
 env:
   global:
-    secure: BIXurpR+KTooYWs8Nkc90r5LIlhYnv3D0qIXItkB60DfYi+GavOdsAfywUIMh+hDAzTZCDahqlZCDPxPThY7Fvlgflf47jKUr6sC4fBMmvDdQVNLj+rzMjoPrSlDwaXipwAiK8sk4yyMmIVQlXn4gF7VoengjPP7Z9jRiQ87mH9Nwbnb/mXi7Ccn37AuNUu9phRJ29+RduC+ScXNt/bV2jZD13dRIEXs5RCK0JUmE/+nrV0tZ+RI7SUL3tD1jORKxkm49u+1FzD0pFyjMEAo5zAYynyLdGxt50nTDw2UYWSVCyDJ5bVXOe9yYk9Ub8+M3FEwYxJOhbjkhVLZ6mwzOdilZeGrA6OWQGGZ3qRScD/kNr53OIb4NlE26kEGOV0eWTLukmNWtKfCVrpd5xdFawZ3LrRkP5chMVUXX+RpaRB6n1A98u6I62HJGrBqDsSk0PkBSQW4tdaqU9UTOicaMpum2Y++pzfk/eaW4MORdhovSTYtMfkRZ8laL6HylfzP+3/HVJqAYrMxggkLmgC1Xha1JBXkGVmHBFtyKR2Szwx5PJ6g76osqQc4gwoIB5fJ39bILrNIx8gWTp/Of+sRYzb1zpGRDeMiZTnYPUQie4J/y8pcCvK8+rB85oHixjLDXxxScoWLWnEpXQCwxMeO29h4da0GKfciJAvbxKbrhGY=
+    - secure: BIXurpR+KTooYWs8Nkc90r5LIlhYnv3D0qIXItkB60DfYi+GavOdsAfywUIMh+hDAzTZCDahqlZCDPxPThY7Fvlgflf47jKUr6sC4fBMmvDdQVNLj+rzMjoPrSlDwaXipwAiK8sk4yyMmIVQlXn4gF7VoengjPP7Z9jRiQ87mH9Nwbnb/mXi7Ccn37AuNUu9phRJ29+RduC+ScXNt/bV2jZD13dRIEXs5RCK0JUmE/+nrV0tZ+RI7SUL3tD1jORKxkm49u+1FzD0pFyjMEAo5zAYynyLdGxt50nTDw2UYWSVCyDJ5bVXOe9yYk9Ub8+M3FEwYxJOhbjkhVLZ6mwzOdilZeGrA6OWQGGZ3qRScD/kNr53OIb4NlE26kEGOV0eWTLukmNWtKfCVrpd5xdFawZ3LrRkP5chMVUXX+RpaRB6n1A98u6I62HJGrBqDsSk0PkBSQW4tdaqU9UTOicaMpum2Y++pzfk/eaW4MORdhovSTYtMfkRZ8laL6HylfzP+3/HVJqAYrMxggkLmgC1Xha1JBXkGVmHBFtyKR2Szwx5PJ6g76osqQc4gwoIB5fJ39bILrNIx8gWTp/Of+sRYzb1zpGRDeMiZTnYPUQie4J/y8pcCvK8+rB85oHixjLDXxxScoWLWnEpXQCwxMeO29h4da0GKfciJAvbxKbrhGY=
+    - secure: QP3NApDumG9xUMo96lJe+/lAvsnEmXX8KQVvqAIIQMYky7LOy+6/rdwQZo829JYX8wmwkM5izLoNuAxi3bCQtXC4/rjAwyjdkus/GXp2SL/JZjlKCN+fshkY1/oEMu+V7FITJa0CytWcijJguMCnFLhlzysdS0tbO9A8c90CbFJVZx85zmtII7cjoLC48aATnuCAuWigKeCB7EwHqk4D6lChcWMBwa3DvS7O27ycGerryi2ovgpL1ZEP3sMp33yu1TORwt4fSXF7dqtybgNFRyt1aTbV+pFFvdJOelVF3/pWjKmC8qILbCHGo3zhcL1xZdfX2/n5KI80ZhrUtz3iHJq8mtDhTqdpKlDV+HbhBLgqwfcsyiVdhp6gt+dYiOhqVzu5uItbXQltXJ498Amnw7XtYF1ZIfh6BsjqlfgTuS2ZTpjGErmLtKRdwSFmRPz0VYJoEXbsicuqCp/8ibgQQDri0xpSe8Xs14LalExxQ59/hQ4/xrsVxvGGUvBNTFff1WSKQup1FC4T/n9H2lLnbXWjDU5sIXMm7iOuVF+99VYkrESyBDX93MtwVHDTn74WbYKIiJp2jwVBVynKoHrsJUjAO6pzASr8JSHDTngxT+QwOpScmxQ3WMoxWjW8/stMi5qFO/EdKnfAQ1F58GAjDQciN80vIqVlCHHMPY53X0E=
+    - secure: 1EVw90lnk0uVVGLhch1t4iCkiODbtYtiPQW5CNVpT5QrRBCD9MhVXk13POBcDFp3hUjus9djN6JTZrd53wi/A2okYRMVeTX+bmse1LYWvElX5hW/9zzoZfbtssWjUnscqlvWYDcX4xZRwPFHRBe4KYGCqLuvJ7DRk7Rye5PUxaDO0sgMRisfFwtQtOW0lMkvsJhbRjO9Bz8f3aL8Zm2tM0kRh5jMjELpGnfXfMEkk8J2dysQSeJVz1KVqPTO0AUZD1nRL3RndkyN4EN/9qH0egQtrymsOXUpKad0+3fOMI6uXraP01SOs2dXmdHlgW32EmD4Lx4+Mo2dBbA1NLOA2T6sAlLKmOYSQalvqgNccXzob6dnundQqreKQh/dlpDMQPJWcN7mtUVWMQm4IZgt226RTvGZJa1H0YXdP+8UNjaQWZc116ZYDGGPdutWUltNsUoEPvTWysN6S2inWS2MDpawCabanqmmlrKc6PG6zOLVhbaBYFjosV+vCPSjv5DOcm+DZV+//Lem3zFMG8OmkZMdS7KLgU6p4eCVVO/CKSLxsd6ZNZVJA1AbX9n5wZsDrlPsDGZuvtfdhJBJtBEaUaG/ycPM5kLQxA1YtJBjaKuataUDRtGCX6ECoDbavTSdUzlOxveNdJg9hm89/faqdJtsdu1RLXDscbW7K/cTRqU=
+
