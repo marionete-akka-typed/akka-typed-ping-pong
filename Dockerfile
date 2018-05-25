@@ -1,3 +1,4 @@
+LABEL maintainer="Ricardo Miranda"
 FROM openjdk:8-jre-alpine
 RUN mkdir -p /opt/app
 WORKDIR /opt/app
