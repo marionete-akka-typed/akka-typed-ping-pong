@@ -1,4 +1,4 @@
-LABEL maintainer="Ricardo Miranda"
+LABEL maintainer="Ricardo Miranda <mail@ricardoMiranda.com>"
 FROM openjdk:8-jre-alpine
 RUN mkdir -p /opt/app
 WORKDIR /opt/app
