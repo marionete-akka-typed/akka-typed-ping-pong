@@ -1,8 +1,9 @@
 package uk.co.marionete.ping_pong
 
-import akka.NotUsed
-import akka.actor.typed.scaladsl.Behaviors
 import akka.actor.typed.{ActorRef, Behavior, Terminated}
+import akka.actor.typed.scaladsl.Behaviors
+import akka.NotUsed
+import scala.util.Random
 
 object Game {
 
@@ -13,7 +14,7 @@ object Game {
       ctx.watch(ping)
       ctx.watch(pong)
 
-      import scala.util.Random
+
       ping ! StartGame(Random.nextInt(30) + 10)
       pong ! StartGame(Random.nextInt(30) + 10)
 
